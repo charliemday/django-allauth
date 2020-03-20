@@ -27,6 +27,7 @@ class AppleOAuth2Adapter(OAuth2Adapter):
     public_key_url = 'https://appleid.apple.com/auth/keys'
 
     def get_public_key(self, id_token):
+        
         kid = jwt.get_unverified_header(id_token)['kid']
         apple_public_key = [d for d in requests.get(self.public_key_url).json()[
             'keys'] if d['kid'] == kid][0]
@@ -39,10 +40,9 @@ class AppleOAuth2Adapter(OAuth2Adapter):
         app = SocialApp.objects.get(provider=provider.id)
         return app.client_id
 
-    def parse_token(self, data):
+    def parse_token(self, data): 
         token = SocialToken(token=data['access_token'])
-        token.token_secret = data.get('refresh_token', '')
-
+        token.token_secret = data.get('refresh_token', '')        
         public_key = self.get_public_key(data['id_token'])
         provider = self.get_provider()
         client_id = self.get_client_id(provider)
@@ -61,7 +61,6 @@ class AppleOAuth2Adapter(OAuth2Adapter):
         return token
 
     def complete_login(self, request, app, token, **kwargs):
-        print("====> Calling Complete Login APPLE")
         extra_data = token.user_data
         login = self.get_provider().sociallogin_from_response(
             request, extra_data

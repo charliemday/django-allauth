@@ -3,6 +3,10 @@ from allauth.socialaccount.providers.oauth2.provider import OAuth2Provider
 
 
 class AppleProvider(OAuth2Provider):
+    
+    def __init__(self, request):
+        super().__init__(request)
+    
     id = 'apple'
     name = 'Apple'
 
