@@ -12,6 +12,8 @@ DATABASES = {
     }
 }
 
+ALLOWED_HOSTS = ["192.168.178.21"]
+
 ROOT_URLCONF = 'allauth.urls'
 
 TEMPLATES = [
@@ -54,6 +56,7 @@ INSTALLED_APPS = (
     'allauth.socialaccount.providers.amazon',
     'allauth.socialaccount.providers.amazon_cognito',
     'allauth.socialaccount.providers.angellist',
+    'allauth.socialaccount.providers.apple',
     'allauth.socialaccount.providers.asana',
     'allauth.socialaccount.providers.auth0',
     'allauth.socialaccount.providers.authentiq',
