@@ -13,12 +13,13 @@ class AppleProvider(OAuth2Provider):
     def extract_uid(self, data):
         return str(data['sub'])
 
-    def extract_common_fields(self, data):
+    def extract_common_fields(self, data):        
         return dict(
             email=data.get('email'),
-            username=data.get('username', ''),
-            name=((data.get('first_name', '') + ' ' +
-                  data.get('last_name', '')).strip()),
+            username=data.get('username', ''),           
+            name = '{} {}'.format(
+                data.get('first_name', ''), 
+                data.get('last_name', '')).strip()
         )
 
     def extract_email_addresses(self, data):

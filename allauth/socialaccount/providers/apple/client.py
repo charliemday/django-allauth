@@ -30,21 +30,26 @@ class AppleOAuth2Client(OAuth2Client):
             settings, 'SOCIALACCOUNT_PROVIDERS', {}
         ).get('apple', {})
 
-        MEMBER_ID = APPLE_PROVIDER_SETTINGS.get('MEMBER_ID', None)
+        # Apple requires the SECRET KEY to be in PEM format:
+        # e.g. "-----BEGIN PRIVATE KEY-----\nMIGT....wpcTSGA\n-----END PRIVATE KEY-----"
         SECRET_KEY = APPLE_PROVIDER_SETTINGS.get('SECRET_KEY', None)
-
+        SECRET_KEY_PEM = "-----BEGIN PRIVATE KEY-----\n{}\n-----END PRIVATE KEY-----".format(SECRET_KEY)
+            
+        SECRET_KEY_ID = APPLE_PROVIDER_SETTINGS.get('SECRET_KEY_ID', None)
+        TEAM_ID = APPLE_PROVIDER_SETTINGS.get('TEAM_ID', None)
+                
         CURRENT_TIMESTAMP = int(time())
         claims = {
-            'iss': MEMBER_ID,
+            'iss': TEAM_ID,
             'aud': 'https://appleid.apple.com',
-            'sub': self.consumer_key,
+            'sub': self.consumer_key, 
             'iat': CURRENT_TIMESTAMP,
             'exp': CURRENT_TIMESTAMP + 15777000,
         }
-        headers = {'kid': self.consumer_secret, 'alg': 'ES256'}
+        headers = {'kid': SECRET_KEY_ID, 'alg': 'ES256'}
         client_secret = jwt.encode(
             payload=claims,
-            key=SECRET_KEY,
+            key=SECRET_KEY_PEM,
             algorithm='ES256',
             headers=headers
         ).decode('utf-8')
